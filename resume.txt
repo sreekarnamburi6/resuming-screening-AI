@@ -1,0 +1,37 @@
+NAMBURI SREEKAR
+Andhra Pradesh, India | +91 7995155944 | sreekarnamburi6@gmail.com | www.linkedin.com/in/namburisreekar18
+PROFESSIONAL SUMMARY
+AI & Machine Learning enthusiast with hands-on experience in building real-time anomaly detection systems,
+NLP-based chatbots, and healthcare ML platforms. Skilled in Python, Computer Vision, and Deep Learning with
+deployed web applications using Flask. Seeking a paid AI/ML internship to contribute to production-level AI
+systems.
+EDUCATION
+B.Tech – Computer Science & Engineering (IoT, Cybersecurity and Blockchain)
+QIS Institution of Technology & Engineering College
+Expected Graduation: 2028
+TECHNICAL SKILLS
+Programming: Python (Advanced), Java, C
+ML & AI: Scikit-learn, OpenCV, NLP, Deep Learning
+Web: Flask, HTML, CSS
+Concepts: Machine Learning, Data Structures & Algorithms
+Tools: Git, GitHub
+Hardware: ESP32 (Edge AI)
+TECHNICAL PROJECTS
+MediScope AI – Multi-Disease Detection Platform
+Problem: Early detection of diseases requires complex screening systems not easily accessible.
+Technology: Python, Flask, Machine Learning, Deep Learning Models
+Result: Developed an AI-powered healthcare platform capable of detecting multiple diseases using trained ML/DL
+models.
+AI Chatbot – Intelligent Conversational System
+Problem: Websites lack automated interaction to answer user queries.
+Technology: Python, Flask, NLP Concepts
+Result: Built a web-based chatbot capable of responding to user queries and improving interaction.
+Crowd Anomaly Detection using Edge AI
+Problem: Public places require automated monitoring for unusual crowd behavior.
+Technology: Python, Computer Vision, Edge AI, ESP32
+Result: Developed a real-time anomaly detection system that generates alerts for abnormal crowd activity.
+ACHIEVEMENTS
+• 1st Prize – Technical Event, QIS Institution of Technology
+• 1st Prize – Technical Competition, Rise College
+LANGUAGES
+English | Telugu | Hindi
