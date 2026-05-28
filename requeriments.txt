@@ -1,4 +1,5 @@
 scikit-learn
 nltk
-flask
-scikit-learn
+openai
+python-dotenv
+reportlab
