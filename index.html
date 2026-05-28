@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Resume Screening AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#0f172a;overflow:hidden;color:white;}
+
+/* ---------- INTRO ---------- */
+
+.intro{
+    position:fixed;
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:radial-gradient(circle at center,#1e293b,#0f172a);
+    z-index:9999;
+    transition:opacity 1s ease;
+}
+
+.paper{
+    width:360px;
+    height:480px;
+    background:#ffffff;
+    border-radius:10px;
+    box-shadow:0 50px 100px rgba(0,0,0,0.8);
+    position:relative;
+    overflow:hidden;
+    transform:translateY(-600px);
+    animation:dropPaper 1.4s ease forwards;
+}
+
+@keyframes dropPaper{to{transform:translateY(0);}}
+
+.lines{
+    position:absolute;
+    width:100%;
+    height:200%;
+    background:repeating-linear-gradient(
+        to bottom,#e5e7eb,#e5e7eb 2px,#ffffff 22px
+    );
+    animation:scrollDoc 2s ease forwards;
+    animation-delay:0.8s;
+}
+
+@keyframes scrollDoc{from{transform:translateY(-100%);}to{transform:translateY(0);}}
+
+.title-on-paper{position:absolute;width:100%;top:45%;text-align:center;}
+.title-text{
+    font-size:22px;font-weight:700;
+    background:linear-gradient(90deg,#38bdf8,#22c55e,#38bdf8);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:shine 3s linear infinite, glow 2.5s ease-in-out infinite;
+}
+@keyframes shine{to{background-position:200% center;}}
+@keyframes glow{
+    0%{text-shadow:0 0 8px rgba(56,189,248,0.6);}
+    50%{text-shadow:0 0 22px rgba(34,197,94,0.8);}
+    100%{text-shadow:0 0 8px rgba(56,189,248,0.6);}
+}
+
+/* ---------- DASHBOARD ---------- */
+
+.dashboard{
+    display:none;
+    min-height:100vh;
+    padding:60px 40px;
+}
+
+.dashboard-container{
+    display:flex;
+    gap:30px;
+    align-items:flex-start;
+}
+
+.pdf-panel,.analysis-panel{
+    flex:1;
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:35px;
+    backdrop-filter:blur(20px);
+}
+
+.analysis-panel h3,
+.analysis-panel h4 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.analysis-panel p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: #e2e8f0;
+}
+
+.analysis-panel ul {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.analysis-panel li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.analysis-card {
+    background: rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+}
+
+.analysis-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.analysis-card h4 {
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #38bdf8;
+}
+
+.analysis-card p,
+.analysis-card ul {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #e2e8f0;
+}
+
+.analysis-card ul {
+    padding-left: 18px;
+}
+
+.section-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 20px 0;
+}
+
+.upload-area{
+    border:2px dashed #38bdf8;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    margin-bottom:20px;
+    transition:0.3s;
+}
+.upload-area:hover{background:rgba(56,189,248,0.1);}
+
+textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:10px;
+    border:none;
+    resize:none;
+    font-size:14px;
+}
+
+input[type="checkbox"]{
+    accent-color:#38bdf8;
+    transform:scale(1.2);
+    margin-right:8px;
+}
+
+.pdf-preview{
+    flex:1;
+    border-radius:12px;
+    overflow:hidden;
+    background:#111;
+    margin-top:15px;
+    height:400px;
+}
+.pdf-preview iframe{width:100%;height:100%;border:none;}
+
+.analysis-title{font-size:20px;margin-bottom:15px;color:#38bdf8;}
+
+.loading{text-align:center;margin-top:60px;}
+.progress-bar-container{
+    width:100%;height:10px;background:#1f2937;border-radius:10px;
+    margin-bottom:20px;overflow:hidden;
+}
+.progress-bar{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,#38bdf8,#22c55e);
+    transition:width 0.3s ease;
+}
+.loading-spinner{
+    border:4px solid rgba(255,255,255,0.2);
+    border-top:4px solid #38bdf8;
+    border-radius:50%;
+    width:40px;height:40px;margin:0 auto 20px;
+    animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Result UI */
+.circle-progress{position:relative;width:150px;margin:0 auto 20px;}
+.score-number{
+    position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    font-size:24px;font-weight:700;
+}
+
+.skill-tags{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:15px;
+}
+.skill-chip{
+    background:rgba(34,197,94,0.2);
+    padding:6px 12px;border-radius:20px;font-size:12px;
+}
+.missing-chip{
+    background:rgba(239,68,68,0.2);
+    padding:6px 12px;border-radius:20px;font-size:12px;
+}
+
+.suggestions{
+    margin-top:20px;
+    background:rgba(255,255,255,0.07);
+    padding:15px;
+    border-radius:12px;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div class="intro" id="intro">
+    <div class="paper">
+        <div class="lines"></div>
+        <div class="title-on-paper">
+            <div class="title-text" id="animatedTitle"></div>
+        </div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+<div class="dashboard-container">
+
+<!-- LEFT PANEL -->
+<div class="pdf-panel">
+
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        Click to Upload Resume PDF
+        <input type="file" name="resume_pdf" id="fileInput" accept="application/pdf" hidden>
+    </div>
+
+    <label>Paste Resume Text</label>
+    <textarea id="resumeTextarea" name="resume" rows="6" placeholder="Paste resume text here..."></textarea>
+
+    <button type="button" id="rewriteBtn" onclick="rewriteResume()" style="margin-top:10px;">Rewrite with AI</button>
+
+    <label style="margin-top:15px; display:block;">Paste Job Description</label>
+    <textarea id="jobInput" name="job" rows="6" placeholder="Paste job description here..." required></textarea>
+
+    <div style="margin-top:12px; display:flex; align-items:center; gap:8px; font-size:13px;">
+        <input type="checkbox" id="optimize" name="optimize" checked>
+        <label for="optimize">Enable Resume Optimization Suggestions</label>
+    </div>
+
+    <button type="button" onclick="toggleResume()" style="margin-top:12px;">Show / Hide Resume Preview</button>
+
+    <div id="pdfPreviewContainer" style="display:none;">
+        <div class="pdf-preview" id="pdfPreview"></div>
+    </div>
+
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="analysis-panel">
+
+<div class="analysis-title">AI Analysis</div>
+
+<div id="resultSection" style="display:none;">
+
+<div class="analysis-card">
+    <h4>HR 6‑Second Resume Score</h4>
+    <p id="hrScore"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>Overall Match</h4>
+    <p id="overallMatch"></p>
+    <p><strong>Skill Score:</strong> <span id="skillScore"></span>%</p>
+    <p><strong>Text Similarity:</strong> <span id="similarityScore"></span>%</p>
+</div>
+
+<div class="analysis-card">
+    <h4>Role Clarity</h4>
+    <p id="roleClarity"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>Impact & Results</h4>
+    <p id="impactScore"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>ATS Keyword Coverage</h4>
+    <p><strong>ATS Score:</strong> <span id="atsScore"></span>%</p>
+    <p id="atsFeedback"></p>
+    <p><strong>Matched Keywords:</strong></p>
+    <p id="matchedATS"></p>
+    <p><strong>Missing Keywords:</strong></p>
+    <p id="missingATS"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>Career Growth</h4>
+    <p id="growthFeedback"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>Summary Quality</h4>
+    <p id="summaryFeedback"></p>
+</div>
+
+<div class="analysis-card">
+    <h4>Improvement Suggestions</h4>
+    <ul id="improvementList"></ul>
+    <button onclick="downloadReport()" style="margin-top:15px;">Download Feedback Report</button>
+</div>
+
+</div>
+
+<div id="loadingSection" style="display:none; margin-top:20px; color:#38bdf8;">Loading analysis...</div>
+<button type="button" onclick="analyzeResume()" style="margin-top:20px;">Analyze Resume</button>
+<button type="button" onclick="generateRewrite()" style="margin-top:20px; margin-left:12px;">Generate Optimized Resume</button>
+
+</div>
+<script>
+
+/* Intro typing */
+const text="Resume Screening System";
+let i=0;
+function typeEffect(){
+    if(i<text.length){
+        document.getElementById("animatedTitle").innerHTML+=text.charAt(i);
+        i++;
+        setTimeout(typeEffect,55);
+    }
+}
+setTimeout(typeEffect,1000);
+
+setTimeout(()=>{document.getElementById("intro").style.opacity="0";},4500);
+setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+    document.body.style.overflow="auto";
+},5500);
+
+/* PDF Preview */
+document.getElementById("fileInput").addEventListener("change",function(e){
+    const file=e.target.files[0];
+    if(file){
+        const reader=new FileReader();
+        reader.onload=function(){
+            document.getElementById("pdfPreview").innerHTML=
+                `<iframe src="${reader.result}"></iframe>`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function toggleResume() {
+    const preview = document.getElementById("pdfPreviewContainer");
+    if (!preview) return;
+    if (preview.style.display === "none" || preview.style.display === "") {
+        preview.style.display = "block";
+    } else {
+        preview.style.display = "none";
+    }
+}
+
+async function rewriteResume() {
+    const resumeEl = document.getElementById('resumeTextarea');
+    const jobEl = document.getElementById('jobInput');
+    if (!resumeEl || !jobEl) return;
+
+    const resume = resumeEl.value.trim();
+    const job = jobEl.value.trim();
+
+    if (!resume || !job) {
+        alert('Please provide both resume text and job description to rewrite.');
+        return;
+    }
+
+    const btn = document.getElementById('rewriteBtn');
+    const prevText = btn ? btn.innerText : null;
+    if (btn) { btn.disabled = true; btn.innerText = 'Rewriting...'; }
+
+    try {
+        const resp = await fetch('/rewrite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resume: resume, job: job })
+        });
+
+        const data = await resp.json();
+        if (resp.ok && data.rewritten) {
+            resumeEl.value = data.rewritten;
+            alert('Resume rewritten and placed into the text area.');
+        } else {
+            alert(data.error || 'AI rewrite failed.');
+        }
+    } catch (err) {
+        alert('Network error while calling rewrite endpoint.');
+        console.error(err);
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerText = prevText; }
+    }
+}
+
+function generateRewrite() {
+    const resumeFile = document.getElementById("fileInput").files[0];
+    const jobDesc = document.querySelector("textarea[name='job']").value;
+
+    if (!resumeFile || !jobDesc) {
+        alert("Upload resume and enter job description first.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+
+        fetch("/rewrite", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                resume: e.target.result,
+                job: jobDesc
+            })
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Optimized_Resume.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        });
+    };
+
+    reader.readAsText(resumeFile);
+}
+
+function analyzeResume() {
+
+    const formData = new FormData();
+    const fileInput = document.getElementById("fileInput");
+    const jobInput = document.getElementById("jobInput");
+
+    if (fileInput.files.length > 0) {
+        formData.append("resume_pdf", fileInput.files[0]);
+    }
+
+    formData.append("job", jobInput.value);
+
+    document.getElementById("loadingSection").style.display = "block";
+
+    fetch("/analyze", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById("loadingSection").style.display = "none";
+        document.getElementById("resultSection").style.display = "block";
+
+        document.getElementById("hrScore").innerText = data.hr_score + "%";
+        document.getElementById("overallMatch").innerText = data.match_percentage + "%";
+        document.getElementById("skillScore").innerText = data.skill_score + "%";
+        document.getElementById("similarityScore").innerText = data.similarity_score + "%";
+
+        document.getElementById("roleClarity").innerText = data.role_clarity;
+        document.getElementById("impactScore").innerText = data.impact_score;
+
+        document.getElementById("atsScore").innerText = data.ats_score;
+        document.getElementById("atsFeedback").innerText = data.ats_feedback;
+
+        document.getElementById("matchedATS").innerText = data.matched_ats_keywords.join(", ");
+        document.getElementById("missingATS").innerText = data.missing_ats_keywords.join(", ");
+
+        document.getElementById("growthFeedback").innerText = data.growth_feedback;
+        document.getElementById("summaryFeedback").innerText = data.summary_feedback;
+
+        // Improvement Suggestions
+        const improvementList = document.getElementById("improvementList");
+        improvementList.innerHTML = "";
+
+        data.missing_skills.forEach(skill => {
+            const li = document.createElement("li");
+            li.innerText = "Consider learning and adding '" + skill + "' to your resume.";
+            improvementList.appendChild(li);
+        });
+
+        if(data.match_percentage < 70){
+            const li = document.createElement("li");
+            li.innerText = "You are moderately aligned. Add missing skills and relevant projects.";
+            improvementList.appendChild(li);
+        }
+
+    });
+}
+
+function downloadReport() {
+
+    const reportData = {
+        "HR Score": document.getElementById("hrScore").innerText,
+        "Match Percentage": document.getElementById("overallMatch").innerText,
+        "Skill Score": document.getElementById("skillScore").innerText,
+        "Text Similarity": document.getElementById("similarityScore").innerText,
+        "Role Clarity": document.getElementById("roleClarity").innerText,
+        "Impact": document.getElementById("impactScore").innerText,
+        "ATS Score": document.getElementById("atsScore").innerText,
+        "Career Growth": document.getElementById("growthFeedback").innerText,
+        "Summary Quality": document.getElementById("summaryFeedback").innerText,
+        "Improvement Suggestions": Array.from(
+            document.getElementById("improvementList").children
+        ).map(li => li.innerText)
+    };
+
+    fetch("/download-report", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(reportData)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Resume_Analysis_Report.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    });
+}
+</script>
+
+</body>
+</html>
